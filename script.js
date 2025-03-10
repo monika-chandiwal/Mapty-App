@@ -12,7 +12,7 @@ const workout = document.querySelector('.workout');
 //OOP
 class Workout {
   date = new Date();
-  id = new Date().toLocaleDateString().slice(-10);
+  id = Math.trunc(Math.random() * 1000000 + 100000).toString();
 
   constructor(distance, duration, coords, name) {
     this.distance = distance; //km
@@ -90,6 +90,7 @@ class App {
     this._getPosition();
     form.addEventListener('submit', this._newWorkout.bind(this));
     inputType.addEventListener('change', this._toggleElevationField.bind(this));
+    workouts.addEventListener('click', this._moveToPopup.bind(this));
   }
 
   _getPosition() {
@@ -279,6 +280,19 @@ class App {
     </li>`;
 
     form.insertAdjacentHTML('afterend', html);
+  }
+  _moveToPopup(e) {
+    const worke = e.target.closest('.workout');
+    console.log(worke);
+    if (!worke) return;
+
+    const wrk = this.#workout.find(w => w.id === worke.dataset.id);
+
+    console.log('coords : ', wrk.coords);
+    this.#map.setView(wrk.coords, 13, {
+      animate: true,
+      pan: { duration: 1 },
+    });
   }
 }
 
